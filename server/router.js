@@ -25,7 +25,7 @@ router.get('/note', getAllNote);
 router.get('/note/:id', getNote);
 router.put('/note/:id/vote/up', thumbsUp);
 router.put('/note/:id/vote/down', thumbsDown);
-router.post('/note', logger, validateAuth, addNote);
+router.post('/note', logger, addNote);
 router.post('/image/upload', upload.single('photo'), uploadImageFromMemory);
 
 module.exports = router;
