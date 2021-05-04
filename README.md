@@ -36,6 +36,7 @@
 - `React Native`
 - `Expo`
 - `Node.js`
+- `PostgreSQL`
 
 ### 1. Clone this repo
 
