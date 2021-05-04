@@ -3,48 +3,56 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-exports.authMiddleware = async (req, res, next) => {
+// Helpers
+const checkPassword = (inputPassword, hashPassword) => {
+  return bcrypt.compareSync(inputPassword, hashPassword);
+};
+
+const findUser = async (userEmail) => {
+  return await User.findOne({
+    attributes: ['userId', 'userPassword'],
+    where: { userEmail },
+  });
+};
+
+const generateToken = (userId, email) => {
+  return jwt.sign({ userId, email }, process.env.TOKEN_SECRET, {
+    expiresIn: 60 * 60,
+  });
+};
+
+const getAuthInfo = (headers) => {
+  const token = headers.authorization.split(' ')[1];
+  return jwt.verify(token, process.env.TOKEN_SECRET);
+};
+
+// Controllers
+exports.getAuth = async (req, res) => {
   const { email, password } = req.body;
   try {
-    // Retrieve user and password
-    const result = await User.findOne({
-      attributes: ['userId', 'userPassword'],
-      where: { userEmail: email },
-    });
+    const foundUser = await findUser(email);
+    const { userId, userPassword: userHashPassword } = foundUser.dataValues;
 
-    // Load hash from your password DB.
-    const passwordIsValid = bcrypt.compareSync(
-      password,
-      result.dataValues.userPassword
-    );
-
-    if (passwordIsValid) {
-      console.log('Correct password');
-      const token = jwt.sign(
-        { userId: result.dataValues.userId, email },
-        process.env.TOKEN_SECRET,
-        { expiresIn: 60 * 60 }
-      );
-      res.setHeader('Authorization', 'Bearer ' + token);
-      res.end();
-      // next();
+    if (checkPassword(password, userHashPassword)) {
+      const generatedToken = generateToken(userId, email);
+      res.setHeader('Authorization', 'Bearer ' + generatedToken);
     } else {
-      console.log('Incorrect password');
+      res.status(401);
     }
+    res.end();
   } catch (err) {
     console.log(err);
   }
 };
 
-exports.checkAuth = async (req, res, next) => {
-  const token = req.headers.authorization.split(' ')[1];
-  const { userId } = jwt.verify(token, process.env.TOKEN_SECRET);
+exports.validateAuth = async (req, res, next) => {
+  const { userId } = getAuthInfo(req.headers);
   try {
     if (userId) {
       req.userId = userId;
       next();
     } else {
-      res.status(403).send('Invalid login');
+      res.status(403).send();
     }
   } catch (err) {
     console.log(err);
