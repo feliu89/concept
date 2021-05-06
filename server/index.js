@@ -15,10 +15,10 @@ db.authenticate()
   .catch((err) => new Error(err));
 
 // Middlewares
-app.use(cors('*'));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(router);
 
 // eslint-disable-next-line
-app.listen(PORT, () => console.log(`Server is running at port ${PORT} 🚀`))
+app.listen(PORT, () => console.log(`Server is running at port ${PORT} 🚀`));

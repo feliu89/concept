@@ -1,7 +1,8 @@
 import React from 'react';
-import { Text, View, Image, StyleSheet } from 'react-native';
+import { Text, View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import Card from '../Shared/card';
 import { Feather } from '@expo/vector-icons';
+import { voteUp, voteDown } from '../Services/noteAPI';
 
 export default function NoteDescription({ route }) {
   const {
@@ -13,6 +14,22 @@ export default function NoteDescription({ route }) {
     noteImage,
   } = route.params;
 
+  const voteUpHandler = async () => {
+    try {
+      await voteUp(noteId);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const voteDownHandler = async () => {
+    try {
+      await voteDown(noteId);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <View>
       <Card>
@@ -22,24 +39,30 @@ export default function NoteDescription({ route }) {
             <Text style={styles.h1}>{noteName}</Text>
           </View>
           <View style={styles.navBarOptions}>
-            <Feather
-              style={styles.navOptions}
-              name='thumbs-up'
-              size={24}
-              color='black'
-            />
-            <Feather
-              style={styles.navOptions}
-              name='thumbs-down'
-              size={24}
-              color='black'
-            />
-            <Feather
-              style={styles.navOptions}
-              name='heart'
-              size={24}
-              color='black'
-            />
+            <TouchableOpacity onPress={voteUpHandler}>
+              <Feather
+                style={styles.navOptions}
+                name='thumbs-up'
+                size={24}
+                color='black'
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={voteDownHandler}>
+              <Feather
+                style={styles.navOptions}
+                name='thumbs-down'
+                size={24}
+                color='black'
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => console.log('fav')}>
+              <Feather
+                style={styles.navOptions}
+                name='heart'
+                size={24}
+                color='black'
+              />
+            </TouchableOpacity>
           </View>
         </View>
         {/* <Text>#{noteId}</Text> */}

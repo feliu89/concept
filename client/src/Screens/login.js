@@ -12,8 +12,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext, useAuth, Store } from '../Providers/auth';
 
 export default function login({ setUserLoggedIn }) {
-  const [email, setEmail] = useState(null);
-  const [password, setPassword] = useState(null);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const { dispatch } = useContext(AuthContext);
 
@@ -32,13 +32,10 @@ export default function login({ setUserLoggedIn }) {
           password: '123',
         }),
       });
-      // const jwtToken = JSON.stringify(result.headers.map.authorization);
       const jwtToken = result.headers.map.authorization;
       await AsyncStorage.setItem('@jwtToken', jwtToken);
       dispatch({ type: 'LOGIN' });
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   return (

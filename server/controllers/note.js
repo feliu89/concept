@@ -1,6 +1,6 @@
 const Note = require('../models/Note');
-require('dotenv').config();
 const { uploadFile } = require('../helpers/aws_buckets');
+require('dotenv').config();
 
 exports.getAllNote = async (req, res) => {
   try {
@@ -24,7 +24,7 @@ exports.getNote = async (req, res) => {
 exports.addNote = async (req, res) => {
   const { noteName, noteDescription, noteImage, noteContent } = req.body;
   try {
-    // await Note.sync({ force: true })
+    // await Note.sync({ force: true });
     const createdNote = await Note.create({
       noteName,
       noteDescription,
@@ -48,20 +48,35 @@ exports.uploadImageFromMemory = async (req, res) => {
 };
 
 exports.thumbsUp = async (req, res) => {
+  const noteId = req.params.id;
   try {
-    res.status(200).send({ STATUS: 'OK' });
+    await Note.increment('thumbsUp', { where: { noteId } });
+    res.status(200).end();
   } catch (err) {
     console.log(err);
   }
 };
 
 exports.thumbsDown = async (req, res) => {
+  const noteId = req.params.id;
   try {
-    res.status(200).send({ STATUS: 'OK' });
+    await Note.decrement('thumbsDown', { where: { noteId } });
+    res.status(200).end();
   } catch (err) {
     console.log(err);
   }
 };
+
+exports.toogleFavourite = async (req, res) => {
+  const noteId = req.params.id;
+  try {
+    await Note.decrement('thumbsDown', { where: { noteId } });
+    res.status(200).end();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 // const fs = require('fs'); // IF WE WANT TO UPLOAD FROM DISK
 // exports.uploadImageFromDisk = async (req, res) => {
 //   const content = fs.readFileSync(req.file);

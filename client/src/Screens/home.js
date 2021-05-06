@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, View, FlatList, TouchableOpacity } from 'react-native';
 import Card from '../Shared/card';
-import { getNote } from '../Services/ApiClient';
+import { getNote } from '../Services/noteAPI';
 import { NoteHeader } from '../Components/NoteHeader';
 
 export default function Home({ navigation }) {

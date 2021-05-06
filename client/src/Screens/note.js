@@ -11,7 +11,7 @@ import {
   Alert,
   TouchableHighlight,
 } from 'react-native';
-import { postNote, postImage } from '../Services/ApiClient';
+import { postNote, postImage } from '../Services/noteAPI';
 import * as ImagePicker from 'expo-image-picker';
 
 const createFormData = (photo) => {
