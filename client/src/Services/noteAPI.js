@@ -62,7 +62,6 @@ export const postImage = async (image) => {
 };
 
 export const voteUp = async (noteId) => {
-  console.log(`${noteId}`);
   try {
     fetch(`${BASE_URL}/note/${noteId}/vote/up`, {
       method: 'PUT',

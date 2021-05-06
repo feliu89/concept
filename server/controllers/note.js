@@ -1,4 +1,5 @@
 const Note = require('../models/Note');
+const UserSocials = require('../models/UserSocials');
 const { uploadFile } = require('../helpers/aws_buckets');
 require('dotenv').config();
 
@@ -47,31 +48,113 @@ exports.uploadImageFromMemory = async (req, res) => {
   }
 };
 
-exports.thumbsUp = async (req, res) => {
+exports.thumbs = async (req, res) => {
   const noteId = req.params.id;
-  try {
-    await Note.increment('thumbsUp', { where: { noteId } });
-    res.status(200).end();
-  } catch (err) {
-    console.log(err);
-  }
-};
+  const thumbs = req.params.thumbs;
+  if (thumbs === 'up' || thumbs === 'down') {
+    try {
+      const thumbStatus = await UserSocials.findOne({
+        where: { UserSocialsNoteId: noteId, UserSocialsUserId: req.userId },
+      });
 
-exports.thumbsDown = async (req, res) => {
-  const noteId = req.params.id;
-  try {
-    await Note.decrement('thumbsDown', { where: { noteId } });
-    res.status(200).end();
-  } catch (err) {
-    console.log(err);
+      if (thumbStatus === null) {
+        await UserSocials.upsert(
+          {
+            UserSocialsNoteId: noteId,
+            UserSocialsUserId: req.userId,
+            UserSocialsThumbsState: thumbs,
+          },
+          {
+            where: { UserSocialsNoteId: noteId, UserSocialsUserId: req.userId },
+          }
+        );
+        if (thumbs === 'up') {
+          const resu = await Note.increment('thumbsUp', { where: { noteId } });
+        }
+        if (thumbs === 'down') {
+          await Note.increment('thumbsDown', { where: { noteId } });
+        }
+      }
+
+      if (thumbStatus !== null) {
+        if (thumbStatus.dataValues.UserSocialsThumbsState !== thumbs) {
+          await UserSocials.upsert(
+            {
+              UserSocialsNoteId: noteId,
+              UserSocialsUserId: req.userId,
+              UserSocialsThumbsState: thumbs,
+            },
+            {
+              where: {
+                UserSocialsNoteId: noteId,
+                UserSocialsUserId: req.userId,
+              },
+            }
+          );
+
+          if (thumbs === 'up') {
+            await Note.increment('thumbsUp', { where: { noteId } });
+            await Note.decrement('thumbsDown', { where: { noteId } });
+          }
+
+          if (thumbs === 'down') {
+            await Note.increment('thumbsDown', { where: { noteId } });
+            await Note.decrement('thumbsUp', { where: { noteId } });
+          }
+        }
+      }
+      res.status(200).send();
+    } catch (err) {
+      console.log(err);
+    }
+  } else {
+    res.status(404).send('Not a valid request');
   }
 };
 
 exports.toogleFavourite = async (req, res) => {
   const noteId = req.params.id;
   try {
-    await Note.decrement('thumbsDown', { where: { noteId } });
-    res.status(200).end();
+    const recordExist = await UserSocials.findOne({
+      where: { UserSocialsNoteId: noteId, UserSocialsUserId: req.userId },
+    });
+
+    if (recordExist === null) {
+      await UserSocials.upsert(
+        {
+          UserSocialsNoteId: noteId,
+          UserSocialsUserId: req.userId,
+          UserSocialsFavourite: true,
+        },
+        {
+          where: { UserSocialsNoteId: noteId, UserSocialsUserId: req.userId },
+        }
+      );
+      await Note.increment('favourites', { where: { noteId } });
+    }
+
+    if (recordExist !== null) {
+      console.log(!recordExist.dataValues.UserSocialsFavourite);
+      await UserSocials.upsert(
+        {
+          UserSocialsNoteId: noteId,
+          UserSocialsUserId: req.userId,
+          UserSocialsFavourite: !recordExist.dataValues.UserSocialsFavourite,
+        },
+        {
+          where: {
+            UserSocialsNoteId: noteId,
+            UserSocialsUserId: req.userId,
+          },
+        }
+      );
+      if (recordExist.dataValues.UserSocialsFavourite) {
+        await Note.decrement('favourites', { where: { noteId } });
+      } else {
+        await Note.increment('favourites', { where: { noteId } });
+      }
+    }
+    res.status(200).send();
   } catch (err) {
     console.log(err);
   }

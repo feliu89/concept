@@ -2,7 +2,7 @@ const moment = require('moment');
 
 exports.logger = async (req, res, next) => {
   const timeLog = moment(new Date()).format('HH:MM:SS');
-  console.log(`📞`);
+  console.log(`>> 📞`);
   console.log(`${timeLog}  ${req.method} ${req.route.path}`);
   console.log(
     `${timeLog}  Authorization: `,
@@ -10,6 +10,6 @@ exports.logger = async (req, res, next) => {
   );
   console.log(`${timeLog}  Params: `, req.params);
   console.log(`${timeLog}  Body: `, req.body);
-  console.log(`🛑`);
+  console.log(`<< 🛑`);
   next();
 };

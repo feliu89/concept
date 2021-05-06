@@ -21,12 +21,15 @@ const Note = db.define(
     },
     thumbsUp: {
       type: DataTypes.INTEGER,
+      defaultValue: 0,
     },
     thumbsDown: {
       type: DataTypes.INTEGER,
+      defaultValue: 0,
     },
     favourites: {
       type: DataTypes.INTEGER,
+      defaultValue: 0,
     },
     noteStatus: {
       type: DataTypes.STRING(15),
