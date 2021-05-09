@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import Card from '../Shared/card';
 import { Feather } from '@expo/vector-icons';
-import { voteUp, voteDown } from '../Services/noteAPI';
+import {
+  voteUp,
+  voteDown,
+  toogleFavourite,
+  getSocials,
+} from '../Services/noteAPI';
 
 export default function NoteDescription({ route }) {
   const {
@@ -13,18 +18,29 @@ export default function NoteDescription({ route }) {
     noteCreatedAt,
     noteImage,
   } = route.params;
+  const [socials, setSocials] = useState({});
 
-  const voteUpHandler = async () => {
+  useEffect(() => {
+    getActualState();
+  }, []);
+
+  const getActualState = async () => {
+    await getSocials(noteId).then((resp) => setSocials(resp));
+  };
+
+  const voteHandler = async (voteType) => {
     try {
-      await voteUp(noteId);
+      await voteUp(noteId, voteType);
+      await getActualState();
     } catch (err) {
       console.log(err);
     }
   };
 
-  const voteDownHandler = async () => {
+  const FavouriteHandler = async () => {
     try {
-      await voteDown(noteId);
+      await toogleFavourite(noteId);
+      await getActualState();
     } catch (err) {
       console.log(err);
     }
@@ -39,28 +55,32 @@ export default function NoteDescription({ route }) {
             <Text style={styles.h1}>{noteName}</Text>
           </View>
           <View style={styles.navBarOptions}>
-            <TouchableOpacity onPress={voteUpHandler}>
+            <TouchableOpacity onPress={() => voteHandler('up')}>
               <Feather
                 style={styles.navOptions}
                 name='thumbs-up'
                 size={24}
-                color='black'
+                color={
+                  socials.UserSocialsThumbsState === 'up' ? 'blue' : 'black'
+                }
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={voteDownHandler}>
+            <TouchableOpacity onPress={() => voteHandler('down')}>
               <Feather
                 style={styles.navOptions}
                 name='thumbs-down'
                 size={24}
-                color='black'
+                color={
+                  socials.UserSocialsThumbsState === 'down' ? 'blue' : 'black'
+                }
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => console.log('fav')}>
+            <TouchableOpacity onPress={FavouriteHandler}>
               <Feather
                 style={styles.navOptions}
                 name='heart'
                 size={24}
-                color='black'
+                color={socials.UserSocialsFavourite ? 'red' : 'black'}
               />
             </TouchableOpacity>
           </View>
@@ -69,6 +89,7 @@ export default function NoteDescription({ route }) {
         <Text>{noteDescription}</Text>
         <Text>{noteContent}</Text>
         <Text style={styles.italic}>{noteCreatedAt}</Text>
+        <Text style={styles.italic}>{socials.UserSocialsFavourite}</Text>
       </Card>
     </View>
   );

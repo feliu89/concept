@@ -61,18 +61,39 @@ export const postImage = async (image) => {
   }
 };
 
-export const voteUp = async (noteId) => {
+// export const voteUp = async (noteId) => {
+//   try {
+//     const result = fetch(`${BASE_URL}/note/${noteId}/vote/up`, {
+//       method: 'PUT',
+//       headers: {
+//         Accept: 'application/json',
+//         'Content-Type': 'application/json',
+//         Authorization: userJWT,
+//       },
+//     })
+//       .then((data) => data.json())
+//       .catch((error) => {
+//         console.log('error', error);
+//       });
+
+//     return result;
+//   } catch (e) {
+//     console.log(e);
+//   }
+// };
+
+export const voteUp = async (noteId, voteType) => {
   try {
-    fetch(`${BASE_URL}/note/${noteId}/vote/up`, {
+    const result = await fetch(`${BASE_URL}/note/${noteId}/vote/${voteType}`, {
       method: 'PUT',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         Authorization: userJWT,
       },
-    }).catch((error) => {
-      console.log('error', error);
     });
+    const data = await result.json();
+    // return data;
   } catch (e) {
     console.log(e);
   }
@@ -80,16 +101,53 @@ export const voteUp = async (noteId) => {
 
 export const voteDown = async (noteId) => {
   try {
-    fetch(`${BASE_URL}/note/${noteId}/vote/down`, {
+    const result = await fetch(`${BASE_URL}/note/${noteId}/vote/down`, {
       method: 'PUT',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         Authorization: userJWT,
       },
-    }).catch((error) => {
-      console.log('error', error);
     });
+    const data = await result.json();
+    // return data;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const toogleFavourite = async (noteId) => {
+  try {
+    const result = fetch(`${BASE_URL}/note/${noteId}/favourite`, {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: userJWT,
+      },
+    }).then((data) => data.json());
+
+    return result;
+    // .catch((error) => {
+    //   console.log('error', error);
+    // });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const getSocials = async (noteId) => {
+  try {
+    const response = fetch(`${BASE_URL}/note/${noteId}/socials`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: userJWT,
+      },
+    }).then((data) => data.json());
+    // .catch((err) => console.log(err));
+    return response;
   } catch (e) {
     console.log(e);
   }

@@ -6,6 +6,7 @@ const {
   uploadImageFromMemory,
   thumbs,
   toogleFavourite,
+  getNoteSocialsByUser,
 } = require('./controllers/note');
 const { getAllUser, getUser, addUser } = require('./controllers/user');
 const { upload } = require('./middlewares/multerInMemory');
@@ -27,5 +28,6 @@ router.put('/note/:id/vote/:thumbs', validateAuth, logger, thumbs);
 router.put('/note/:id/favourite', validateAuth, logger, toogleFavourite);
 router.post('/note', logger, addNote);
 router.post('/image/upload', upload.single('photo'), uploadImageFromMemory);
+router.get('/note/:id/socials', validateAuth, logger, getNoteSocialsByUser);
 
 module.exports = router;

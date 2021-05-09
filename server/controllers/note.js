@@ -49,6 +49,7 @@ exports.uploadImageFromMemory = async (req, res) => {
 };
 
 exports.thumbs = async (req, res) => {
+  console.log('thumbs2');
   const noteId = req.params.id;
   const thumbs = req.params.thumbs;
   if (thumbs === 'up' || thumbs === 'down') {
@@ -69,7 +70,7 @@ exports.thumbs = async (req, res) => {
           }
         );
         if (thumbs === 'up') {
-          const resu = await Note.increment('thumbsUp', { where: { noteId } });
+          await Note.increment('thumbsUp', { where: { noteId } });
         }
         if (thumbs === 'down') {
           await Note.increment('thumbsDown', { where: { noteId } });
@@ -94,16 +95,43 @@ exports.thumbs = async (req, res) => {
 
           if (thumbs === 'up') {
             await Note.increment('thumbsUp', { where: { noteId } });
-            await Note.decrement('thumbsDown', { where: { noteId } });
+            if (thumbStatus.dataValues.UserSocialsThumbsState !== null) {
+              await Note.decrement('thumbsDown', { where: { noteId } });
+            }
           }
 
           if (thumbs === 'down') {
             await Note.increment('thumbsDown', { where: { noteId } });
+            if (thumbStatus.dataValues.UserSocialsThumbsState !== null) {
+              await Note.decrement('thumbsUp', { where: { noteId } });
+            }
+          }
+        }
+        if (thumbStatus.dataValues.UserSocialsThumbsState === thumbs) {
+          await UserSocials.upsert(
+            {
+              UserSocialsNoteId: noteId,
+              UserSocialsUserId: req.userId,
+              UserSocialsThumbsState: null,
+            },
+            {
+              where: {
+                UserSocialsNoteId: noteId,
+                UserSocialsUserId: req.userId,
+              },
+            }
+          );
+
+          if (thumbs === 'up') {
             await Note.decrement('thumbsUp', { where: { noteId } });
+          }
+
+          if (thumbs === 'down') {
+            await Note.decrement('thumbsDown', { where: { noteId } });
           }
         }
       }
-      res.status(200).send();
+      res.status(200).send({});
     } catch (err) {
       console.log(err);
     }
@@ -118,9 +146,8 @@ exports.toogleFavourite = async (req, res) => {
     const recordExist = await UserSocials.findOne({
       where: { UserSocialsNoteId: noteId, UserSocialsUserId: req.userId },
     });
-
     if (recordExist === null) {
-      await UserSocials.upsert(
+      await UserSocials.create(
         {
           UserSocialsNoteId: noteId,
           UserSocialsUserId: req.userId,
@@ -132,13 +159,9 @@ exports.toogleFavourite = async (req, res) => {
       );
       await Note.increment('favourites', { where: { noteId } });
     }
-
     if (recordExist !== null) {
-      console.log(!recordExist.dataValues.UserSocialsFavourite);
-      await UserSocials.upsert(
+      await UserSocials.update(
         {
-          UserSocialsNoteId: noteId,
-          UserSocialsUserId: req.userId,
           UserSocialsFavourite: !recordExist.dataValues.UserSocialsFavourite,
         },
         {
@@ -154,7 +177,33 @@ exports.toogleFavourite = async (req, res) => {
         await Note.increment('favourites', { where: { noteId } });
       }
     }
-    res.status(200).send();
+    res.status(200).send({});
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.getNoteSocialsByUser = async (req, res) => {
+  const noteId = req.params.id;
+  try {
+    const noteSocials = await UserSocials.findOne({
+      where: { UserSocialsNoteId: noteId, UserSocialsUserId: req.userId },
+    });
+
+    if (noteSocials !== null) {
+      const {
+        UserSocialsNoteId,
+        UserSocialsFavourite,
+        UserSocialsThumbsState,
+      } = noteSocials.dataValues;
+      res.status(200).send({
+        UserSocialsNoteId,
+        UserSocialsFavourite,
+        UserSocialsThumbsState,
+      });
+    } else {
+      res.status(404).send({ STATUS: 'none' });
+    }
   } catch (err) {
     console.log(err);
   }
