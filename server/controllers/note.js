@@ -49,7 +49,6 @@ exports.uploadImageFromMemory = async (req, res) => {
 };
 
 exports.thumbs = async (req, res) => {
-  console.log('thumbs2');
   const noteId = req.params.id;
   const thumbs = req.params.thumbs;
   if (thumbs === 'up' || thumbs === 'down') {

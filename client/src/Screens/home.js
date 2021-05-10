@@ -7,7 +7,7 @@ import { NoteHeader } from '../Components/NoteHeader';
 export default function Home({ navigation }) {
   const [note, setNote] = useState([]);
 
-  const getNoteHandler = () => {
+  const getNoteHandler = async () => {
     getNote()
       .then((response) => setNote(response))
       .catch((err) => console.log(err));

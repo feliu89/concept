@@ -21,8 +21,12 @@ const generateToken = (userId, email) => {
 };
 
 const getAuthInfo = (headers) => {
-  const token = headers.authorization.split(' ')[1];
-  return jwt.verify(token, process.env.TOKEN_SECRET);
+  try {
+    const token = headers.authorization.split(' ')[1];
+    return jwt.verify(token, process.env.TOKEN_SECRET);
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 module.exports = {

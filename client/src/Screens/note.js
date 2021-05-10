@@ -13,13 +13,16 @@ import {
 } from 'react-native';
 import { postNote, postImage } from '../Services/noteAPI';
 import * as ImagePicker from 'expo-image-picker';
+import mime from 'mime';
 
-const createFormData = (photo) => {
+const createFormData = async (photo) => {
+  const newImageUri = 'file:///' + photo.uri.split('file:/').join('');
+
   const data = new FormData();
   data.append('photo', {
-    uri: photo.uri,
+    uri: newImageUri,
     name: photo.uri.split('/').pop(),
-    type: photo.type,
+    type: mime.getType(newImageUri),
   });
   return data;
 };
@@ -29,13 +32,11 @@ export default function Note() {
   const [description, setDescription] = React.useState('');
   const [image, setImage] = useState(null);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     let imageName = 'none';
     if (image) {
-      console.log('inside');
-      const noteImage = image.uri.split('/').pop();
-      const createdFile = createFormData(image);
-      imageName = createdFile._parts[0][1].name;
+      const createdFile = await createFormData(image);
+      console.log(createdFile);
       postImage(createdFile);
       setImage(null);
     }
@@ -53,20 +54,18 @@ export default function Note() {
 
   useEffect(() => {
     (async () => {
-      if (Platform.OS !== 'web') {
-        const {
-          status,
-        } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== 'granted') {
-          alert('Sorry, we need camera roll permissions to make this work!');
-        }
+      const {
+        status,
+      } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Sorry, we need camera roll permissions to make this work!');
       }
     })();
   }, []);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,

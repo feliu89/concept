@@ -2,12 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import Card from '../Shared/card';
 import { Feather } from '@expo/vector-icons';
-import {
-  voteUp,
-  voteDown,
-  toogleFavourite,
-  getSocials,
-} from '../Services/noteAPI';
+import { vote, toogleFavourite, getSocials } from '../Services/noteAPI';
 
 export default function NoteDescription({ route }) {
   const {
@@ -30,7 +25,7 @@ export default function NoteDescription({ route }) {
 
   const voteHandler = async (voteType) => {
     try {
-      await voteUp(noteId, voteType);
+      await vote(noteId, voteType);
       await getActualState();
     } catch (err) {
       console.log(err);
