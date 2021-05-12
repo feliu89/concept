@@ -4,9 +4,9 @@ import { StyleSheet, View, Text, Image } from 'react-native';
 export const NoteHeader = ({ notes }) => {
   return (
     <View style={styles.container}>
-      <View style={styles.imageBox}>
+      {/* <View style={styles.imageBox}>
         <Image style={styles.logo} source={{ uri: notes.noteImage }} />
-      </View>
+      </View> */}
       <View style={styles.textBox}>
         <Text style={styles.h1}>{notes.noteName}</Text>
         <Text numberOfLines={4}>{notes.noteDescription}</Text>

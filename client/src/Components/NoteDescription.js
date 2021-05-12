@@ -5,6 +5,7 @@ import { Feather } from '@expo/vector-icons';
 import { vote, toogleFavourite, getSocials } from '../Services/noteAPI';
 
 export default function NoteDescription({ route }) {
+  console.log(route);
   const {
     noteId,
     noteName,
@@ -14,7 +15,7 @@ export default function NoteDescription({ route }) {
     noteImage,
   } = route.params;
   const [socials, setSocials] = useState({});
-
+  console.log(route.params);
   useEffect(() => {
     getActualState();
   }, []);

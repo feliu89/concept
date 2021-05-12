@@ -33,14 +33,14 @@ export default function Note() {
   const [image, setImage] = useState(null);
 
   const handleSave = async () => {
-    let imageName = 'none';
     if (image) {
       const createdFile = await createFormData(image);
-      console.log(createdFile);
       postImage(createdFile);
       setImage(null);
+      postNote({ name, description, noteImage: image.uri.split('/').pop() });
+    } else {
+      postNote({ name, description, noteImage: 'none' });
     }
-    postNote({ name, description, noteImage: imageName });
     Alert.alert('Note saved');
     setName('');
     setDescription('');
@@ -54,9 +54,8 @@ export default function Note() {
 
   useEffect(() => {
     (async () => {
-      const {
-        status,
-      } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
         alert('Sorry, we need camera roll permissions to make this work!');
       }

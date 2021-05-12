@@ -25,7 +25,9 @@ export default function Home({ navigation }) {
         keyExtractor={(item) => item.noteId.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity
-            onPress={() => navigation.navigate('NoteDescription', item)}
+            onPress={() =>
+              navigation.navigate('NoteDescription', { ...item, setNote })
+            }
           >
             <Card>
               <NoteHeader notes={item} />
