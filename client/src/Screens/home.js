@@ -17,6 +17,9 @@ export default function Home({ navigation }) {
     getNoteHandler();
   }, []);
 
+  const loggy = () => {
+    console.log('loggy');
+  };
   return (
     <View>
       {/* <Button title='Refresh' onPress={getNoteHandler} /> */}
@@ -26,7 +29,10 @@ export default function Home({ navigation }) {
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate('NoteDescription', { ...item, setNote })
+              navigation.navigate('NoteDescription', {
+                ...item,
+                loggyFun: loggy,
+              })
             }
           >
             <Card>

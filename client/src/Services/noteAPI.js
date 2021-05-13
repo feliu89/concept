@@ -55,7 +55,6 @@ export const postImage = async (image) => {
         // ...defaultHeaders,
       },
     });
-    await console.log(response);
     return response.json();
   } catch (e) {
     console.log(e);
