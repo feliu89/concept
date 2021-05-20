@@ -20,7 +20,7 @@
   <a href="#-license">License</a>
 </h3>
 
-> [**Concept**](#) let you save your ideas and share them with others publicly or privately, send polls (WIP) and get the feedback. There'll be three types of roles (WIP) on the application: seekers, innovators, both. It has a home dashboard to know what's trending on the platform.
+> [**Concept**](#) let you save your ideas, rate them and adding them to your favourites.
 
 ## 📸 Overview
 
