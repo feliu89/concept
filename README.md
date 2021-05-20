@@ -25,9 +25,8 @@
 ## 📸 Overview
 
 <div align="center">
-...
-<!-- <img src="https://github.com/feliu89/concept/blob/main/show-case/home.PNG" alt="React Native" width="20%" height="20%"> &emsp; <img src="https://github.com/feliu89/concept/blob/main/show-case/note.PNG" alt="React Native" width="20%" height="20%">&emsp; <img src="https://github.com/feliu89/concept/blob/main/show-case/profile.PNG" alt="React Native" width="20%" height="20%"> -->
-</div>
+  
+<img src="https://github.com/feliu89/concept/blob/main/client/assets/images/sample.png?raw=true" alt="React Native" width="90%" height="90%">
 
 ## 🚀 Getting started
 
