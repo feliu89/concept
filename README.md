@@ -28,6 +28,8 @@
   
 <img src="https://github.com/feliu89/concept/blob/main/client/assets/images/sample.png?raw=true" alt="React Native" width="90%" height="90%">
 
+</div>
+
 ## 🚀 Getting started
 
 ### 0. Setup prerequisites:
