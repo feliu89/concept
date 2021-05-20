@@ -3,9 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Feather } from '@expo/vector-icons';
 import HomeStack from '../Navigation/homeStack';
-import FavouritesStack from '../Navigation/favouritesStack';
 import NoteStack from '../Navigation/noteStack';
-import ChatStack from '../Navigation/chatStack';
 import ProfileStack from '../Navigation/profileStack';
 
 const Tab = createBottomTabNavigator();
@@ -27,34 +25,12 @@ export default function BottomNav() {
           }}
         />
         <Tab.Screen
-          name='Favourites'
-          component={FavouritesStack}
-          options={{
-            tabBarLabel: 'Favourites',
-            tabBarIcon: ({ color, size }) => {
-              return <Feather name='heart' size={size} color={color} />;
-            },
-          }}
-        />
-        <Tab.Screen
           name='Note'
           component={NoteStack}
           options={{
             tabBarLabel: 'Note',
             tabBarIcon: ({ color, size }) => {
               return <Feather name={'plus-circle'} size={size} color={color} />;
-            },
-          }}
-        />
-        <Tab.Screen
-          name='Chat'
-          component={ChatStack}
-          options={{
-            tabBarLabel: 'Chat',
-            tabBarIcon: ({ color, size }) => {
-              return (
-                <Feather name={'message-circle'} size={size} color={color} />
-              );
             },
           }}
         />

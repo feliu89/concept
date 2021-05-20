@@ -13,9 +13,9 @@ export default function NoteDescription({ route }) {
     noteCreatedAt,
     noteImage,
   } = route.params;
+
   const [socials, setSocials] = useState({});
   useEffect(() => {
-    console.log(route.params);
     getActualState();
   }, []);
 
@@ -80,7 +80,6 @@ export default function NoteDescription({ route }) {
             </TouchableOpacity>
           </View>
         </View>
-        {/* <Text>#{noteId}</Text> */}
         <Text>{noteDescription}</Text>
         <Text>{noteContent}</Text>
         <Text style={styles.italic}>{noteCreatedAt}</Text>

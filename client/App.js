@@ -3,6 +3,7 @@ import * as Font from 'expo-font';
 import AppLoading from 'expo-app-loading';
 import Router from './Router';
 import { Store } from './src/Providers/auth';
+import { NoteContext } from './src/Providers/noteContext';
 
 const getFonts = () => {
   Font.loadAsync({
@@ -17,7 +18,9 @@ export default function App() {
 
   return fontsLoaded ? (
     <Store>
-      <Router />
+      <NoteContext.Provider>
+        <Router />
+      </NoteContext.Provider>
     </Store>
   ) : (
     <AppLoading
