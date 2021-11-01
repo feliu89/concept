@@ -51,7 +51,7 @@ git clone https://github.com/feliu89/concept
 npm install
 ```
 
-### 3. Configure environment varaible
+### 3. Configure environment variable
 
 - See `client/.env.example` and `server/.env.example` for an example of how the variables should be named
 
